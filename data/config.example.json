@@ -1,0 +1,123 @@
+{
+  "_comment": "Copy to data/config.json (gitignored) and edit. Every field is optional. since: sessions that started earlier are hidden unless the client asks (?older=1 / SHOW OLDER). sinceSession: a session id that is always shown. watchedTasks: Windows Task Scheduler tasks for the infra rail. modules.stack: the optional project module (system map of one web app plus infra rail rows); leave enabled false unless you fill it in. label names it in the UI. map feeds the built-in map profile (shape: the header of lib/stack-profile.js); profile is an optional path to your own profile module instead (see lib/stack.js), e.g. data/my-app.profile.local.js. formerIds: ids this module had before a rename, so saved UI state carries over. modules.stack.infra is its optional rail profile; every label in it is shown verbatim. since/sinceSession are re-read every 60 s; watchedTasks and modules need a restart.",
+  "since": "2026-01-01T00:00:00.000Z",
+  "sinceSession": null,
+  "watchedTasks": [
+    {
+      "id": "task-nightly-backup",
+      "taskName": "Nightly Backup",
+      "label": "Nightly backup"
+    }
+  ],
+  "modules": {
+    "stack": {
+      "enabled": false,
+      "baseUrl": "https://app.example.com",
+      "root": "~/src/my-app",
+      "localPort": 3000,
+      "label": "My app",
+      "profile": null,
+      "formerIds": [],
+      "map": {
+        "prodRef": "origin/main",
+        "services": [
+          { "id": "app-db", "key": "database", "label": "Database", "critical": true, "sub": "connection pool + query check" },
+          { "id": "app-queue", "key": "queue", "label": "Job queue" }
+        ],
+        "subsystems": [
+          { "id": "app-mail", "label": "Outbound mail", "parent": "queue", "detail": "receipts and resets", "sub": "worker process" }
+        ],
+        "deps": [
+          { "id": "dep-db", "label": "Database host", "inferFrom": "app-db", "detail": "managed database" },
+          { "id": "dep-mail", "label": "Mail provider", "detail": "transactional email", "sub": "HTTP API" }
+        ],
+        "crons": [
+          { "id": "job-export", "label": "Nightly export", "expr": "30 3 * * *", "source": "jobs/export.js", "leaderElected": true }
+        ],
+        "intervals": [
+          { "id": "job-sweep", "label": "Queue sweep", "everyMs": 60000, "text": "every 60 s", "source": "jobs/sweep.js" }
+        ],
+        "edges": [
+          ["app-mail", "dep-mail", "notifies"],
+          ["app-queue", "job-sweep", "schedules"]
+        ]
+      },
+      "infra": {
+        "appLabel": "My app",
+        "services": [
+          {
+            "id": "marketing-site",
+            "label": "Marketing site",
+            "origin": "https://www.example.com",
+            "healthPath": "",
+            "fallback": "marketing site"
+          },
+          {
+            "id": "status-page",
+            "label": "Status page",
+            "origin": null,
+            "healthPath": "/api/health",
+            "fallback": "status page"
+          }
+        ],
+        "servicesMissing": "extra services: no public URL configured",
+        "schedulerFile": "src/scheduler.js",
+        "cronsLabel": "My app schedules",
+        "crons": [
+          {
+            "id": "cron-nightly-backup",
+            "label": "Nightly backup",
+            "expr": "30 3 * * *",
+            "source": "src/scheduler.js",
+            "leaderElected": true
+          },
+          {
+            "id": "cron-site-backup",
+            "label": "Site backup",
+            "expr": "0 9 * * *",
+            "gate": "services",
+            "source": "hosting cron service",
+            "leaderElected": false
+          }
+        ],
+        "intervals": [
+          {
+            "id": "interval-cleanup",
+            "label": "Cleanup timer",
+            "every": "every 24 h",
+            "sub": "setInterval, not cron",
+            "everyMs": 86400000,
+            "source": "src/scheduler.js"
+          }
+        ],
+        "dynamic": [],
+        "hold": {
+          "id": "hold",
+          "label": "Automation HOLD",
+          "path": "~/my-automation/HOLD",
+          "errorPrefix": "automation HOLD",
+          "sub": "present = automation paused"
+        },
+        "processes": [
+          {
+            "id": "worker",
+            "label": "Background worker",
+            "dirNeedle": "my-worker",
+            "scripts": [
+              "worker.py"
+            ],
+            "idleDetail": "no worker.py process",
+            "modeFile": {
+              "path": "~/my-worker/config.py",
+              "name": "MODE",
+              "metaKey": "mode",
+              "liveValue": "live",
+              "liveSub": "MODE = LIVE",
+              "errorPrefix": "my-worker config"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "_comment": "USD per million tokens. Source: https://platform.claude.com/docs/en/about-claude/pricing fetched 2026-09-02. Keys are model ids with any date suffix (e.g. -20251001) and any [..] variant suffix stripped. cacheWrite5m = 1.25x input, cacheWrite1h = 2x input, cacheRead = 0.1x input (0.025x on fable-5-1 / mythos-5-1).",
+  "fetchedAt": "2026-09-02",
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "models": {
+    "claude-fable-5-1":  { "in": 10,   "cacheWrite5m": 12.5,  "cacheWrite1h": 20,   "cacheRead": 0.25, "out": 50 },
+    "claude-mythos-5-1": { "in": 10,   "cacheWrite5m": 12.5,  "cacheWrite1h": 20,   "cacheRead": 0.25, "out": 50 },
+    "claude-fable-5":    { "in": 10,   "cacheWrite5m": 12.5,  "cacheWrite1h": 20,   "cacheRead": 1,    "out": 50 },
+    "claude-mythos-5":   { "in": 10,   "cacheWrite5m": 12.5,  "cacheWrite1h": 20,   "cacheRead": 1,    "out": 50 },
+    "claude-opus-5":     { "in": 5,    "cacheWrite5m": 6.25,  "cacheWrite1h": 10,   "cacheRead": 0.5,  "out": 25 },
+    "claude-opus-4-8":   { "in": 5,    "cacheWrite5m": 6.25,  "cacheWrite1h": 10,   "cacheRead": 0.5,  "out": 25 },
+    "claude-opus-4-7":   { "in": 5,    "cacheWrite5m": 6.25,  "cacheWrite1h": 10,   "cacheRead": 0.5,  "out": 25 },
+    "claude-opus-4-6":   { "in": 5,    "cacheWrite5m": 6.25,  "cacheWrite1h": 10,   "cacheRead": 0.5,  "out": 25 },
+    "claude-opus-4-5":   { "in": 5,    "cacheWrite5m": 6.25,  "cacheWrite1h": 10,   "cacheRead": 0.5,  "out": 25 },
+    "claude-opus-4-1":   { "in": 15,   "cacheWrite5m": 18.75, "cacheWrite1h": 30,   "cacheRead": 1.5,  "out": 75 },
+    "claude-opus-4":     { "in": 15,   "cacheWrite5m": 18.75, "cacheWrite1h": 30,   "cacheRead": 1.5,  "out": 75 },
+    "claude-sonnet-5":   { "in": 2,    "cacheWrite5m": 2.5,   "cacheWrite1h": 4,    "cacheRead": 0.2,  "out": 10 },
+    "claude-sonnet-4-6": { "in": 3,    "cacheWrite5m": 3.75,  "cacheWrite1h": 6,    "cacheRead": 0.3,  "out": 15 },
+    "claude-sonnet-4-5": { "in": 3,    "cacheWrite5m": 3.75,  "cacheWrite1h": 6,    "cacheRead": 0.3,  "out": 15 },
+    "claude-sonnet-4":   { "in": 3,    "cacheWrite5m": 3.75,  "cacheWrite1h": 6,    "cacheRead": 0.3,  "out": 15 },
+    "claude-haiku-4-5":  { "in": 1,    "cacheWrite5m": 1.25,  "cacheWrite1h": 2,    "cacheRead": 0.1,  "out": 5 },
+    "claude-haiku-3-5":  { "in": 0.8,  "cacheWrite5m": 1,     "cacheWrite1h": 1.6,  "cacheRead": 0.08, "out": 4 }
+  }
+}

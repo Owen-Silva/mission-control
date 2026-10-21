@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mission Control</title>
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0c10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mission Control">
+<!-- The server fills in the stack module's display name ({{STACK_*}}) and
+     this meta (label + formerIds, from data/config.json modules.stack). -->
+<meta name="mc-stack" content="{{STACK_META}}">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2713%27 fill=%27%23c084fc%27 fill-opacity=%270.25%27 stroke=%27%23c084fc%27 stroke-width=%272%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%275%27 fill=%27%23c084fc%27/%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-name">MISSION&nbsp;CONTROL</span>
+  </div>
+
+  <div class="viewtabs" id="viewtabs" role="tablist" aria-label="View">
+    <button class="vtab" id="tab-agents" type="button" role="tab" aria-selected="true" data-view="agents" title="Agent fan-out (1)">AGENTS</button>
+    <button class="vtab" id="tab-stack" type="button" role="tab" aria-selected="false" data-view="stack" title="{{STACK_LABEL}} system map (2)">{{STACK_UPPER}}</button>
+  </div>
+
+  <!-- display:contents at desktop width, a scrollable second topbar row on a phone -->
+  <div class="tb-row2" id="tb-row2">
+
+  <label class="sel-wrap" id="sel-wrap" title="Session">
+    <span class="micro">SESSION</span>
+    <select id="session-select" aria-label="Session"></select>
+  </label>
+
+  <button class="tgl older-btn" id="tgl-older" type="button" aria-pressed="false" hidden>SHOW OLDER</button>
+
+  <div class="counters" id="counters">
+    <span class="ct"><b id="ct-running">0</b><i>RUNNING</i></span>
+    <span class="ct-sep">·</span>
+    <span class="ct"><b id="ct-agents">0</b><i>AGENTS</i></span>
+    <span class="ct-sep">·</span>
+    <span class="ct"><b id="ct-depth">0</b><i>DEPTH</i></span>
+    <span class="ct-sep">·</span>
+    <span class="ct" id="ct-tokens-wrap"><b id="ct-tokens">&mdash;</b><i>TOKENS</i></span>
+    <span class="ct-sep">·</span>
+    <span class="ct" id="ct-cost-wrap"><b id="ct-cost">&mdash;</b><i>COST</i></span>
+    <span class="ct-sep" id="ct-5h-sep" hidden>·</span>
+    <span class="ct ct-lim" id="ct-5h-wrap" hidden><b id="ct-5h">&mdash;</b><i>5H</i></span>
+    <span class="ct-sep" id="ct-week-sep" hidden>·</span>
+    <span class="ct ct-lim" id="ct-week-wrap" hidden><b id="ct-week">&mdash;</b><i>WEEK</i></span>
+    <span class="ct" id="ct-model-wrap" hidden><b id="ct-model">&mdash;</b><i>MODEL</i></span>
+  </div>
+
+  <div class="stack-chips" id="stack-chips" hidden>
+    <span class="achip" id="ach-status"><i>STATUS</i><b>—</b></span>
+    <span class="achip" id="ach-role"><i>ROLE</i><b>—</b></span>
+    <span class="achip" id="ach-prod"><i>PROD</i><b>—</b></span>
+    <span class="achip" id="ach-local"><i>LOCAL</i><b>—</b></span>
+    <span class="achip" id="ach-latency"><i>LATENCY</i><b>—</b></span>
+    <span class="achip" id="ach-incidents"><i>INCIDENTS</i><b>—</b></span>
+  </div>
+
+  <div class="topbar-spacer"></div>
+
+  <div class="toggles" id="toggles">
+    <button class="tgl" id="tgl-active" type="button" aria-pressed="false">ACTIVE ONLY</button>
+    <button class="tgl" id="tgl-scope" type="button" aria-pressed="true">THIS SESSION</button>
+  </div>
+
+  <div class="toggles" id="alerts-wrap">
+    <button class="tgl" id="tgl-alerts" type="button" aria-pressed="false" title="Desktop alerts off (n)">ALERTS</button>
+  </div>
+
+  </div><!-- /tb-row2 -->
+
+  <div class="fixture-chip" id="stack-fixture-chip" hidden title="/api/stack is not answering - showing public/fixtures/stack.json">{{STACK_UPPER}}: FIXTURE</div>
+  <div class="fixture-chip" id="fixture-chip" hidden>FIXTURE DATA — SERVER UNREACHABLE</div>
+
+  <div class="conn" id="conn" data-state="connecting" title="Connecting">
+    <span class="updated" id="updated">—</span>
+    <span class="dot" aria-hidden="true"></span>
+    <span class="conn-label" id="conn-label">CONNECTING</span>
+  </div>
+</header>
+
+<main class="grid">
+
+  <section class="panel graph-panel" id="graph-panel">
+    <div class="panel-head">
+      <h2 id="panel-title">Agent&nbsp;fan-out</h2>
+      <span class="micro" id="graph-sub">—</span>
+      <div class="panel-head-right">
+        <div class="legend" id="legend">
+          <span class="lg"><i class="sw sw-hub"></i>MAIN</span>
+          <span class="lg"><i class="sw sw-d1"></i>D1</span>
+          <span class="lg"><i class="sw sw-d2"></i>D2</span>
+          <span class="lg"><i class="sw sw-d3"></i>D3</span>
+          <span class="lg"><i class="sw sw-live"></i>RUNNING</span>
+        </div>
+        <div class="legend" id="stack-legend" hidden>
+          <span class="lg"><i class="sw sw-live"></i>UP</span>
+          <span class="lg"><i class="sw sw-warn"></i>DEGRADED</span>
+          <span class="lg"><i class="sw sw-armed"></i>ARMED</span>
+          <span class="lg"><i class="sw sw-wired"></i>WIRED</span>
+          <span class="lg"><i class="sw sw-idle"></i>IDLE</span>
+        </div>
+        <button class="ghost-btn help-btn" id="stack-help" type="button" hidden aria-label="Map controls">?</button>
+        <button class="ghost-btn" id="btn-reset" type="button" title="Reset view (r)">RESET VIEW</button>
+      </div>
+    </div>
+
+    <!-- phone only: #stack-chips / #counters / #toggles / #alerts-wrap are
+         reparented in here at <=820px and moved back on desktop -->
+    <div class="phone-head" id="phone-head" hidden></div>
+
+    <div class="stack-chipbar" id="stack-chipbar" hidden>
+      <span class="micro">TIERS</span>
+      <div class="stack-tierstrip" id="stack-tierstrip"></div>
+      <span class="achip achip-scan" id="ach-scan"><b>—</b></span>
+      <span class="stack-scan micro" id="stack-scanline">—</span>
+    </div>
+
+    <div class="stack-histbar" id="stack-histbar" hidden>
+      <span class="micro">HEALTH</span>
+      <div class="hb-wrap" id="hb-wrap" hidden>
+        <svg id="hb-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 28"
+             preserveAspectRatio="none" role="img" aria-label="{{STACK_LABEL}} 24 hour status band">
+          <g id="hb-band"></g>
+          <g id="hb-spark"></g>
+        </svg>
+      </div>
+      <span class="hb-caption is-off" id="hb-caption">history: not available (server restart pending)</span>
+    </div>
+
+    <div class="graph-stage" id="graph-stage">
+      <svg id="graph" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Radial agent hub graph">
+        <defs>
+          <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#c084fc" stop-opacity="0.24"/>
+            <stop offset="55%" stop-color="#c084fc" stop-opacity="0.06"/>
+            <stop offset="100%" stop-color="#c084fc" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <g id="viewport">
+          <g id="l-glow"></g>
+          <g id="l-rings"></g>
+          <g id="l-arcs"></g>
+          <g id="l-edges"></g>
+          <g id="l-nodes"></g>
+          <g id="l-hub"></g>
+        </g>
+      </svg>
+
+      <svg id="stack-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="{{STACK_LABEL}} system map" hidden>
+        <defs>
+          <filter id="aGlowBad" x="-70%" y="-70%" width="240%" height="240%">
+            <feDropShadow dx="0" dy="0" stdDeviation="3.4" flood-color="#f87171" flood-opacity="0.62"/>
+          </filter>
+          <filter id="aGlowWarn" x="-70%" y="-70%" width="240%" height="240%">
+            <feDropShadow dx="0" dy="0" stdDeviation="2.6" flood-color="#fbbf24" flood-opacity="0.38"/>
+          </filter>
+        </defs>
+        <g id="a-viewport">
+          <g id="a-cols"></g>
+          <g id="a-edges"></g>
+          <g id="a-flow"></g>
+          <g id="a-nodes"></g>
+        </g>
+      </svg>
+
+      <!-- phones get a vertical tier list instead of the five-column map -->
+      <div class="stack-list" id="stack-list" hidden></div>
+
+      <div class="focus-chip" id="focus-chip" hidden>
+        <span class="micro">FOCUS</span>
+        <span id="focus-label"></span>
+        <button type="button" id="focus-clear" aria-label="Clear focus">CLEAR</button>
+      </div>
+
+      <div class="empty-note" id="empty-note" hidden>
+        <span id="empty-text">no subagents running</span>
+        <button type="button" id="empty-showall" hidden>SHOW ALL</button>
+      </div>
+
+      <div class="detail-card" id="detail" hidden>
+        <div class="detail-head">
+          <span class="detail-dot" id="d-dot"></span>
+          <span class="detail-type" id="d-type"></span>
+          <span class="detail-status" id="d-status"></span>
+          <button type="button" class="detail-close" id="d-close" aria-label="Unpin">ESC</button>
+        </div>
+        <p class="detail-desc" id="d-desc"></p>
+        <dl class="detail-grid" id="d-grid"></dl>
+        <div class="detail-last">
+          <span class="micro" id="d-lastlabel">LAST TEXT</span>
+          <p id="d-lasttext"></p>
+        </div>
+      </div>
+
+      <div class="hint" id="hint">drag to pan &middot; wheel to zoom &middot; dbl-click a node to focus its subtree<br>
+        <b>1</b>/<b>2</b> view &middot; <b>a</b> active &middot; <b>s</b> scope &middot; <b>f</b> feed &middot; <b>r</b> reset &middot; <b>/</b> session &middot; <b>esc</b> clear</div>
+
+      <div class="hint" id="stack-hint" hidden>drag to pan &middot; wheel to zoom &middot; click a node to pin it<br>
+        <b>1</b>/<b>2</b> view &middot; <b>f</b> feed &middot; <b>r</b> reset &middot; <b>esc</b> unpin</div>
+    </div>
+
+    <div class="stack-timeline" id="stack-timeline" hidden>
+      <div class="atl-left">
+        <span class="micro">EVERY</span>
+        <div class="atl-ivals" id="atl-ivals"></div>
+        <div class="atl-note" id="atl-note" hidden></div>
+      </div>
+      <div class="atl-axis" id="atl-axis">
+        <div class="atl-ticks" id="atl-ticks"></div>
+        <div class="atl-marks" id="atl-marks"></div>
+        <div class="atl-later" id="atl-later" hidden></div>
+        <div class="atl-line" aria-hidden="true"></div>
+      </div>
+      <div class="atl-list" id="atl-list" hidden></div>
+    </div>
+
+    <div class="feed" id="feed">
+      <div class="feed-head">
+        <span class="micro" id="feed-title">EVENT FEED</span>
+        <span class="feed-count" id="feed-count">0 events</span>
+
+        <span class="fanout" id="fanout-strip" hidden>
+          <svg id="fanout-spark" class="fo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 14"
+               preserveAspectRatio="none" aria-hidden="true">
+            <polyline id="fanout-area" class="fo-area" points=""/>
+            <polyline id="fanout-line" class="fo-line" points=""/>
+          </svg>
+          <span class="micro" id="fanout-label">FAN-OUT</span>
+        </span>
+
+        <span class="topspend" id="topspend" hidden><i class="micro">TOP SPEND</i><b id="topspend-list"></b></span>
+
+        <button type="button" class="ghost-btn feed-btn" id="feed-toggle" aria-expanded="true" title="Toggle feed (f)">HIDE</button>
+      </div>
+      <div class="feed-rows" id="feed-rows"><div class="feed-empty" id="feed-empty">watching this session &middot; nothing has changed yet</div></div>
+      <div class="feed-rows" id="stack-feed-rows" hidden><div class="feed-empty" id="stack-feed-empty">watching {{STACK_LOWER}} &middot; no state changes yet</div></div>
+      <div class="feed-rows" id="merged-feed-rows" hidden></div>
+    </div>
+  </section>
+
+  <aside class="panel rail" id="rail">
+    <div class="panel-head">
+      <h2>Infrastructure</h2>
+      <span class="micro" id="rail-sub">—</span>
+      <button class="rail-toggle" id="rail-toggle" type="button" hidden aria-expanded="true" aria-controls="rail-body" title="Collapse infrastructure">▸</button>
+    </div>
+    <div class="rail-scroll" id="rail-body"></div>
+    <details class="err-strip" id="err-strip" hidden>
+      <summary><span class="err-dot"></span><span id="err-count">0 issues</span></summary>
+      <ul id="err-list"></ul>
+    </details>
+  </aside>
+
+</main>
+
+<div class="tooltip" id="tooltip" hidden></div>
+
+<!-- phone tab bar. `hidden` until the breakpoint says otherwise; the CSS also
+     display:none's it above 820px so a stale unhide can never reach desktop. -->
+<nav class="botnav" id="botnav" hidden role="tablist" aria-label="Section">
+  <button class="bn" type="button" role="tab" data-tab="agents" aria-selected="true">
+    <svg class="bn-i" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+      <circle cx="12" cy="12" r="3"/><circle cx="12" cy="3.4" r="1.8"/><circle cx="19.4" cy="16.3" r="1.8"/><circle cx="4.6" cy="16.3" r="1.8"/>
+      <path d="M12 9V5.2M14.6 13.5l3.2 1.9M9.4 13.5l-3.2 1.9"/>
+    </svg><i>AGENTS</i>
+  </button>
+  <button class="bn" type="button" role="tab" data-tab="stack" aria-selected="false">
+    <svg class="bn-i" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+      <rect x="3" y="4" width="6" height="5" rx="1"/><rect x="15" y="4" width="6" height="5" rx="1"/>
+      <rect x="3" y="15" width="6" height="5" rx="1"/><rect x="15" y="15" width="6" height="5" rx="1"/>
+      <path d="M9 6.5h6M9 17.5h6M6 9v6M18 9v6"/>
+    </svg><i>{{STACK_UPPER}}</i>
+  </button>
+  <button class="bn" type="button" role="tab" data-tab="infra" aria-selected="false">
+    <svg class="bn-i" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="5" rx="1.2"/><rect x="3" y="15" width="18" height="5" rx="1.2"/>
+      <path d="M6.6 6.5h.01M6.6 17.5h.01M12 9v6"/>
+    </svg><i>INFRA</i>
+  </button>
+  <button class="bn" type="button" role="tab" data-tab="feed" aria-selected="false">
+    <svg class="bn-i" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+      <path d="M4 6h16M4 11h11M4 16h16M4 21h8"/>
+    </svg><i>FEED</i>
+    <b class="bn-badge" id="bn-badge" hidden>0</b>
+  </button>
+</nav>
+
+<script src="app.js"></script>
+<script src="stack-view.js"></script>
+<script src="history-ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+# secrets
+.env
+*.env
+*.pem
+*.key
+data/token.txt
+*secret*
+*credential*
+*.pickle
+*cookies*
+
+# deps / build
+node_modules/
+dist/
+build/
+.cache/
+__pycache__/
+
+# logs / scratch
+logs/
+*.log
+*.err
+data/*.tmp
+data/statusline/*.tmp
+
+# runtime status-line records (per session, rewritten constantly)
+data/statusline/
+
+# per-machine runtime state and personal config (never commit these;
+# data/config.example.json is the tracked template)
+data/history.json
+data/history.*.json
+data/config.json
+data/*.ok
+data/*.log
+data/token.txt
+server.log
+server.err
+
+# a machine's own UI fixtures (real snapshots); the tracked
+# public/fixtures/*.json are synthetic (bin/make-fixtures.js)
+public/fixtures/*.local.json
+
+# personal profiles / seeds next to the config (e.g. a stack map profile)
+data/*.local.*

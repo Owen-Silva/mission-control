@@ -1,0 +1,398 @@
+{
+  "generatedAt": "2026-01-15T12:00:00.000Z",
+  "scanMs": 380,
+  "errors": [],
+  "summary": {
+    "status": "ok",
+    "role": "leader",
+    "httpMs": 240,
+    "deployedCommit": "abc1234",
+    "deployedAt": null,
+    "localCommit": "def5678",
+    "localBranch": "main",
+    "unshipped": 2,
+    "dirty": 3,
+    "prodMatchesLocal": false,
+    "incidents": 0
+  },
+  "tiers": [
+    {
+      "id": "edge",
+      "label": "Edge"
+    },
+    {
+      "id": "runtime",
+      "label": "Runtime"
+    },
+    {
+      "id": "app",
+      "label": "App"
+    },
+    {
+      "id": "deps",
+      "label": "Depends on"
+    },
+    {
+      "id": "jobs",
+      "label": "Jobs"
+    },
+    {
+      "id": "local",
+      "label": "This machine"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "edge-domain",
+      "tier": "edge",
+      "label": "app.example.com",
+      "state": "up",
+      "detail": "Apex and www behind a CDN, TLS",
+      "sub": "CDN -> web service",
+      "source": "probe",
+      "meta": {}
+    },
+    {
+      "id": "edge-botgate",
+      "tier": "edge",
+      "label": "Bot check",
+      "state": "wired",
+      "detail": "Challenge on signup and login forms",
+      "sub": "verified server-side",
+      "source": "static",
+      "meta": {}
+    },
+    {
+      "id": "rt-web",
+      "tier": "runtime",
+      "label": "Web service",
+      "state": "up",
+      "detail": "Node web service, 1 replica",
+      "sub": "abc1234 deployed 3h ago",
+      "source": "health",
+      "meta": {}
+    },
+    {
+      "id": "rt-version",
+      "tier": "runtime",
+      "label": "Version endpoint",
+      "state": "up",
+      "detail": "Reports the running commit",
+      "sub": "abc1234",
+      "source": "version",
+      "meta": {}
+    },
+    {
+      "id": "app-http",
+      "tier": "app",
+      "label": "HTTP server",
+      "state": "up",
+      "detail": "Routes, sessions, rate limit on /api/*",
+      "sub": "health ok",
+      "source": "health",
+      "meta": {}
+    },
+    {
+      "id": "app-db",
+      "tier": "app",
+      "label": "Database pool",
+      "state": "up",
+      "detail": "10 connections, 2 in use",
+      "sub": "migrations current",
+      "source": "health",
+      "meta": {}
+    },
+    {
+      "id": "app-scheduler",
+      "tier": "app",
+      "label": "Scheduler",
+      "state": "armed",
+      "detail": "Runs the jobs tier",
+      "sub": "next fire in 41 min",
+      "source": "cron",
+      "meta": {}
+    },
+    {
+      "id": "app-auth",
+      "tier": "app",
+      "label": "Auth",
+      "state": "up",
+      "detail": "Sessions via the auth provider",
+      "sub": "keys loaded",
+      "source": "health",
+      "meta": {}
+    },
+    {
+      "id": "app-billing",
+      "tier": "app",
+      "label": "Billing webhooks",
+      "state": "up",
+      "detail": "Signed webhook receiver",
+      "sub": "last event 2h ago",
+      "source": "health",
+      "meta": {}
+    },
+    {
+      "id": "app-email",
+      "tier": "app",
+      "label": "Email sender",
+      "state": "up",
+      "detail": "Transactional mail",
+      "sub": "queue empty",
+      "source": "health",
+      "meta": {}
+    },
+    {
+      "id": "app-admin",
+      "tier": "app",
+      "label": "Admin console",
+      "state": "idle",
+      "detail": "Owner-only log view",
+      "sub": "no session open",
+      "source": "static",
+      "meta": {}
+    },
+    {
+      "id": "dep-postgres",
+      "tier": "deps",
+      "label": "Postgres",
+      "state": "up",
+      "detail": "Managed database",
+      "sub": "reachable",
+      "source": "health",
+      "meta": {}
+    },
+    {
+      "id": "dep-auth",
+      "tier": "deps",
+      "label": "Auth provider",
+      "state": "wired",
+      "detail": "Third-party identity service",
+      "sub": "no public probe",
+      "source": "static",
+      "meta": {}
+    },
+    {
+      "id": "dep-cdn",
+      "tier": "deps",
+      "label": "CDN / DNS",
+      "state": "up",
+      "detail": "Fronts the domain",
+      "sub": "cache HIT",
+      "source": "probe",
+      "meta": {}
+    },
+    {
+      "id": "dep-email",
+      "tier": "deps",
+      "label": "Email API",
+      "state": "wired",
+      "detail": "Transactional email provider",
+      "sub": "no public probe",
+      "source": "static",
+      "meta": {}
+    },
+    {
+      "id": "dep-storage",
+      "tier": "deps",
+      "label": "Object storage",
+      "state": "wired",
+      "detail": "Nightly backup target",
+      "sub": "no public probe",
+      "source": "static",
+      "meta": {}
+    },
+    {
+      "id": "dep-llm",
+      "tier": "deps",
+      "label": "LLM API",
+      "state": "wired",
+      "detail": "Model calls for the assistant feature",
+      "sub": "no public probe",
+      "source": "static",
+      "meta": {}
+    },
+    {
+      "id": "job-backup",
+      "tier": "jobs",
+      "label": "Nightly backup",
+      "state": "armed",
+      "detail": "0 9 * * * UTC",
+      "sub": "last run 15h ago",
+      "source": "cron",
+      "meta": {}
+    },
+    {
+      "id": "job-digest",
+      "tier": "jobs",
+      "label": "Daily digest",
+      "state": "armed",
+      "detail": "0 15 * * * UTC",
+      "sub": "next in 3h",
+      "source": "cron",
+      "meta": {}
+    },
+    {
+      "id": "job-cleanup",
+      "tier": "jobs",
+      "label": "History cleanup",
+      "state": "armed",
+      "detail": "every 6 h",
+      "sub": "in-process interval",
+      "source": "cron",
+      "meta": {}
+    },
+    {
+      "id": "job-health",
+      "tier": "jobs",
+      "label": "Health monitor",
+      "state": "armed",
+      "detail": "every 5 min",
+      "sub": "in-process interval",
+      "source": "cron",
+      "meta": {}
+    },
+    {
+      "id": "loc-checkout",
+      "tier": "local",
+      "label": "Checkout",
+      "state": "up",
+      "detail": "~/src/my-app on main",
+      "sub": "2 unshipped, 3 dirty",
+      "source": "git",
+      "meta": {}
+    },
+    {
+      "id": "loc-devserver",
+      "tier": "local",
+      "label": "Dev server",
+      "state": "idle",
+      "detail": "nothing listening on :3000",
+      "sub": "start it with npm run dev",
+      "source": "process",
+      "meta": {}
+    },
+    {
+      "id": "loc-changelog",
+      "tier": "local",
+      "label": "Changelog",
+      "state": "up",
+      "detail": "CHANGELOG.md",
+      "sub": "latest entry 2 days ago",
+      "source": "file",
+      "meta": {}
+    }
+  ],
+  "edges": [
+    {
+      "from": "edge-domain",
+      "to": "rt-web",
+      "kind": "serves"
+    },
+    {
+      "from": "edge-botgate",
+      "to": "app-auth",
+      "kind": "uses"
+    },
+    {
+      "from": "rt-web",
+      "to": "app-http",
+      "kind": "runs"
+    },
+    {
+      "from": "rt-web",
+      "to": "rt-version",
+      "kind": "serves"
+    },
+    {
+      "from": "app-http",
+      "to": "app-db",
+      "kind": "uses"
+    },
+    {
+      "from": "app-http",
+      "to": "app-auth",
+      "kind": "uses"
+    },
+    {
+      "from": "app-http",
+      "to": "app-billing",
+      "kind": "runs"
+    },
+    {
+      "from": "app-http",
+      "to": "app-admin",
+      "kind": "serves"
+    },
+    {
+      "from": "app-scheduler",
+      "to": "job-backup",
+      "kind": "schedules"
+    },
+    {
+      "from": "app-scheduler",
+      "to": "job-digest",
+      "kind": "schedules"
+    },
+    {
+      "from": "app-scheduler",
+      "to": "job-cleanup",
+      "kind": "schedules"
+    },
+    {
+      "from": "app-scheduler",
+      "to": "job-health",
+      "kind": "schedules"
+    },
+    {
+      "from": "app-db",
+      "to": "dep-postgres",
+      "kind": "stores"
+    },
+    {
+      "from": "app-auth",
+      "to": "dep-auth",
+      "kind": "uses"
+    },
+    {
+      "from": "edge-domain",
+      "to": "dep-cdn",
+      "kind": "uses"
+    },
+    {
+      "from": "app-email",
+      "to": "dep-email",
+      "kind": "notifies"
+    },
+    {
+      "from": "job-digest",
+      "to": "app-email",
+      "kind": "uses"
+    },
+    {
+      "from": "job-backup",
+      "to": "dep-storage",
+      "kind": "stores"
+    },
+    {
+      "from": "app-http",
+      "to": "dep-llm",
+      "kind": "uses"
+    },
+    {
+      "from": "loc-checkout",
+      "to": "rt-web",
+      "kind": "deploys"
+    },
+    {
+      "from": "loc-devserver",
+      "to": "loc-checkout",
+      "kind": "runs"
+    },
+    {
+      "from": "loc-changelog",
+      "to": "loc-checkout",
+      "kind": "stores"
+    }
+  ]
+}
