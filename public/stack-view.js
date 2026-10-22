@@ -1146,7 +1146,7 @@ function fillStackDetail(n) {
   const tone = n.state === 'up' ? MC.COL.live
     : n.state === 'degraded' || n.state === 'armed' || n.state === 'hold' ? MC.COL.warn
       : n.state === 'down' ? MC.COL.bad : MC.COL.dim;
-  D.dDot.style.background = n.state === 'armed' ? MC.COL.d3 : tone;
+  D.dDot.style.background = n.state === 'armed' ? MC.COL.acc : tone;
   setText(D.dType, n.label || n.id);
   setText(D.dStatus, n.state);
   setText(D.dDesc, n.detail || n.sub || '(no detail reported)');

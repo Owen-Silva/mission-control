@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mission Control</title>
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0a0c10">
+<meta name="theme-color" content="#19191b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mission Control">
@@ -140,15 +140,7 @@
 
     <div class="graph-stage" id="graph-stage">
       <svg id="graph" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Radial agent hub graph">
-        <defs>
-          <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#c084fc" stop-opacity="0.24"/>
-            <stop offset="55%" stop-color="#c084fc" stop-opacity="0.06"/>
-            <stop offset="100%" stop-color="#c084fc" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
         <g id="viewport">
-          <g id="l-glow"></g>
           <g id="l-rings"></g>
           <g id="l-arcs"></g>
           <g id="l-edges"></g>
@@ -160,10 +152,10 @@
       <svg id="stack-svg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="{{STACK_LABEL}} system map" hidden>
         <defs>
           <filter id="aGlowBad" x="-70%" y="-70%" width="240%" height="240%">
-            <feDropShadow dx="0" dy="0" stdDeviation="3.4" flood-color="#f87171" flood-opacity="0.62"/>
+            <feDropShadow dx="0" dy="0" stdDeviation="1.6" flood-color="#cc7b72" flood-opacity="0.4"/>
           </filter>
           <filter id="aGlowWarn" x="-70%" y="-70%" width="240%" height="240%">
-            <feDropShadow dx="0" dy="0" stdDeviation="2.6" flood-color="#fbbf24" flood-opacity="0.38"/>
+            <feDropShadow dx="0" dy="0" stdDeviation="1.4" flood-color="#c9a463" flood-opacity="0.28"/>
           </filter>
         </defs>
         <g id="a-viewport">

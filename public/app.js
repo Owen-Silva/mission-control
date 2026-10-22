@@ -15,10 +15,13 @@
 const TAU = Math.PI * 2;
 const SVGNS = 'http://www.w3.org/2000/svg';
 
+// neutral greys plus one restrained accent (keep in step with style.css :root).
+// the hub is the accent; depth reads as a grey ramp, so colour stays for state.
 const COL = {
-  hub: '#c084fc', d1: '#60a5fa', d2: '#38bdf8', d3: '#22d3ee',
-  live: '#4ade80', dim: '#3f4654', warn: '#fbbf24', bad: '#f87171',
-  muted: '#7d8798'
+  acc: '#8fa6c4',
+  hub: '#8fa6c4', d1: '#c9c9c5', d2: '#a2a29e', d3: '#7e7e7b',
+  live: '#7fb08c', dim: '#5e5e63', warn: '#c9a463', bad: '#cc7b72',
+  muted: '#8e8e92'
 };
 
 const DEPTH_COL = [COL.hub, COL.d1, COL.d2, COL.d3];
@@ -634,7 +637,7 @@ const railGroups = new Map();
 
 const D = {
   svg: $('graph'), vp: $('viewport'),
-  lGlow: $('l-glow'), lRings: $('l-rings'), lArcs: $('l-arcs'),
+  lRings: $('l-rings'), lArcs: $('l-arcs'),
   lEdges: $('l-edges'), lNodes: $('l-nodes'), lHub: $('l-hub'),
   stage: $('graph-stage'),
   sel: $('session-select'),
@@ -1091,12 +1094,6 @@ function paintPositions() {
 
 /* ============================================================== GRAPH RENDER */
 
-function ensureStaticLayers() {
-  if (!D.lGlow.firstChild) {
-    D.lGlow.appendChild(svgEl('circle', { cx: 0, cy: 0, r: 200, fill: 'url(#hubGlow)' }));
-  }
-}
-
 function renderRings() {
   D.lRings.textContent = '';
   if (!tree.root.children.length) return;
@@ -1110,8 +1107,6 @@ function renderRings() {
     t.textContent = tree.multi && d === 1 ? 'SESSIONS' : 'D' + (tree.multi ? d - 1 : d);
     D.lRings.appendChild(t);
   }
-  const glow = D.lGlow.firstChild;
-  if (glow) glow.setAttribute('r', Math.max(140, ringR(1, D_) * 1.5).toFixed(0));
 }
 
 let arcSeq = 0;
@@ -1420,7 +1415,6 @@ function applyView() {
 
 function renderGraph() {
   buildTree();
-  ensureStaticLayers();
   computeLeaves(tree.root);
 
   const sig = structureSig();
