@@ -1,53 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Mission Control">
   <title>Mission Control</title>
-
-  <defs>
-    <!-- Faint violet wash so the near-black ground is not a dead flat slab. -->
-    <radialGradient id="mcWash" cx="50%" cy="40%" r="66%">
-      <stop offset="0%" stop-color="#c084fc" stop-opacity="0.15"/>
-      <stop offset="55%" stop-color="#7c3aed" stop-opacity="0.07"/>
-      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
-    </radialGradient>
-
-    <!-- Translucent disc inside the ring (the favicon's fill-opacity .25). -->
-    <radialGradient id="mcDisc" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#c084fc" stop-opacity="0.30"/>
-      <stop offset="100%" stop-color="#c084fc" stop-opacity="0.12"/>
-    </radialGradient>
-
-    <!-- The brand-dot highlight: #e9d5ff -> #c084fc @60% -> #7c3aed. -->
-    <radialGradient id="mcCore" cx="50%" cy="50%" r="50%" fx="35%" fy="32%">
-      <stop offset="0%" stop-color="#e9d5ff"/>
-      <stop offset="60%" stop-color="#c084fc"/>
-      <stop offset="100%" stop-color="#7c3aed"/>
-    </radialGradient>
-
-    <filter id="mcRingGlow" x="-60%" y="-60%" width="220%" height="220%">
-      <feGaussianBlur stdDeviation="18"/>
-    </filter>
-    <filter id="mcCoreGlow" x="-120%" y="-120%" width="340%" height="340%">
-      <feGaussianBlur stdDeviation="14"/>
-    </filter>
-  </defs>
-
-  <!-- Opaque ground. rx/ry is stripped for the maskable render. -->
-  <rect id="ground" x="0" y="0" width="512" height="512" rx="114" ry="114" fill="#0a0c10"/>
-  <rect id="wash" x="0" y="0" width="512" height="512" rx="114" ry="114" fill="url(#mcWash)"/>
-
-  <g id="rim">
-    <rect x="1.5" y="1.5" width="509" height="509" rx="112.5" ry="112.5"
-          fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="3"/>
-  </g>
-
+  <rect x="0" y="0" width="512" height="512" rx="114" ry="114" fill="#19191b"/>
+  <rect x="1.5" y="1.5" width="509" height="509" rx="112.5" ry="112.5" fill="none" stroke="#323235" stroke-width="3"/>
   <g id="mark">
-    <!-- Soft outer halo so the mark sits in light, not on a flat plate. -->
-    <circle cx="256" cy="256" r="178" fill="none" stroke="#7c3aed" stroke-opacity="0.60"
-            stroke-width="30" filter="url(#mcRingGlow)"/>
-    <!-- Ring: translucent disc + solid violet stroke. -->
-    <circle cx="256" cy="256" r="170" fill="url(#mcDisc)"/>
-    <circle cx="256" cy="256" r="170" fill="none" stroke="#c084fc" stroke-width="26"/>
-    <!-- Core: bloom, then the gradient dot. -->
-    <circle cx="256" cy="256" r="66" fill="#a855f7" opacity="0.85" filter="url(#mcCoreGlow)"/>
-    <circle cx="256" cy="256" r="66" fill="url(#mcCore)"/>
+    <circle cx="256" cy="256" r="170" fill="#8fa6c4" fill-opacity="0.14"/>
+    <circle cx="256" cy="256" r="170" fill="none" stroke="#8fa6c4" stroke-width="26"/>
+    <circle cx="256" cy="256" r="66" fill="#c3cfdf"/>
   </g>
 </svg>

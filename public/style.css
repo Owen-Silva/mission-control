@@ -26,6 +26,7 @@
   --live:#7fb08c;
   --live-rgb:127,176,140;
   --dim:#5e5e63;
+  --faint:#77777b;  /* tertiary TEXT on the panels (~3.6:1); --dim stays for marks */
   --warn:#c9a463;
   --warn-rgb:201,164,99;
   --bad:#cc7b72;
@@ -631,7 +632,7 @@ body{
 .achip.tone-warn{border-color:rgba(var(--warn-rgb),.32);background:rgba(var(--warn-rgb),.06)}
 .achip.tone-bad{border-color:rgba(var(--bad-rgb),.34);background:rgba(var(--bad-rgb),.07)}
 .achip-scan{border-color:transparent;background:transparent;padding:0 0 0 4px;flex:none}
-.achip-scan b{font-size:9px;font-weight:400;color:var(--dim);letter-spacing:.07em}
+.achip-scan b{font-size:9px;font-weight:400;color:var(--faint);letter-spacing:.07em}
 
 /* the legend swatches the Stack view needs on top of the depth colours */
 .sw-warn{background:var(--warn)}
@@ -657,7 +658,7 @@ body{
 .tchip b{font-size:9.5px;font-weight:600;color:var(--text-2);font-variant-numeric:tabular-nums}
 .tchip.bad{background:rgba(var(--warn-rgb),.1)}
 .tchip.bad b{color:var(--warn)}
-.stack-scan{margin-left:auto;color:var(--dim)}
+.stack-scan{margin-left:auto;color:var(--faint)}
 
 /* ============================================================ STACK: HEALTH STRIP */
 
@@ -703,6 +704,9 @@ polyline.hb-spark{
   font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;
   fill:var(--muted);
   paint-order:stroke;stroke:var(--panel);stroke-width:3px;stroke-linejoin:round;
+  /* lift the tier names clear of the deploy arch, whose flat top ran along
+     the old baseline and struck through APP and DEPENDS ON */
+  transform:translateY(-10px);
 }
 .a-divider{stroke:var(--line);stroke-width:1;stroke-dasharray:2 5;opacity:.9}
 
@@ -787,7 +791,7 @@ polyline.hb-spark{
 .ival.is-off i{text-decoration:line-through}
 .ival.is-off b{color:var(--muted)}
 .ival.is-off{border-style:dashed;border-color:#363639}
-.atl-note{font-size:8.5px;letter-spacing:.08em;color:var(--dim);margin-top:auto;white-space:nowrap}
+.atl-note{font-size:8.5px;letter-spacing:.08em;color:var(--faint);margin-top:auto;white-space:nowrap}
 
 .atl-axis{position:relative;flex:1 1 auto;min-width:0;overflow:hidden}
 .atl-line{position:absolute;left:0;right:0;bottom:22px;height:1px;background:#363639}
@@ -801,7 +805,7 @@ polyline.hb-spark{
 .tick:first-child::before{left:0}
 .tick:last-child::before{left:auto;right:0}
 .tk-utc{display:block;font-size:8.5px;letter-spacing:.11em;color:var(--muted);font-variant-numeric:tabular-nums}
-.tk-loc{display:block;font-size:8px;letter-spacing:.09em;color:var(--dim);font-variant-numeric:tabular-nums}
+.tk-loc{display:block;font-size:8px;letter-spacing:.09em;color:var(--faint);font-variant-numeric:tabular-nums}
 
 .atl-marks{position:absolute;inset:0}
 .mark{position:absolute;bottom:22px;width:0}
@@ -835,7 +839,7 @@ polyline.hb-spark{
   text-align:right;pointer-events:auto;
   background:linear-gradient(90deg,rgba(28,28,30,0),rgba(28,28,30,.92) 30%);
 }
-.lt-head{font-size:8px;letter-spacing:.2em;color:var(--dim)}
+.lt-head{font-size:8px;letter-spacing:.2em;color:var(--faint)}
 .lt-row{
   font-size:8.5px;line-height:1.45;color:var(--muted);
   font-variant-numeric:tabular-nums;
@@ -1072,6 +1076,8 @@ polyline.hb-spark{
   }
   .panel-head{height:auto;min-height:40px;gap:8px}
   .panel-head h2{font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  /* the title keeps its words; the path/sub text beside it is what ellipsizes */
+  #panel-title{flex:0 0 auto;max-width:62%;white-space:nowrap}
   .panel-head-right{flex:none}
   /* there is no SVG map on a phone, so there is nothing to reset */
   #btn-reset{display:none}
@@ -1103,6 +1109,7 @@ polyline.hb-spark{
     padding-top:calc(5px + env(safe-area-inset-top,0px));
   }
   .brand{flex:0 1 auto;min-width:0}
+  .brand-mark{flex:none}
   .brand-name{
     font-size:10px;letter-spacing:.12em;min-width:0;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -1113,7 +1120,8 @@ polyline.hb-spark{
   .topbar-spacer{display:none}
   .sel-wrap{flex:0 1 auto;min-width:0;gap:0}
   .sel-wrap .micro{display:none}
-  #session-select{max-width:150px;font-size:12px;min-height:36px;padding:6px 24px 6px 8px}
+  /* use the free topbar width before clipping the session name */
+  #session-select{max-width:100%;font-size:12px;min-height:36px;padding:6px 24px 6px 8px}
   .fixture-chip{
     flex:0 1 auto;min-width:0;max-width:100%;font-size:11px;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -1349,6 +1357,8 @@ polyline.hb-spark{
 @media (max-width:480px){
   .brand-name{display:none}
   .brand{gap:0}
+  /* ACTIVE ONLY / THIS SESSION / ALERTS fit one row down to 320 px */
+  .phone-head .tgl{padding:8px 8px;letter-spacing:.08em}
 }
 
 /* ============================================================ MOTION */
